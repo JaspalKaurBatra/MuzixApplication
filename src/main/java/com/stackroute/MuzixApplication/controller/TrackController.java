@@ -95,12 +95,12 @@ public class TrackController {
     }
 
     @PutMapping("update")
-    public ResponseEntity<?> updateTrack(@RequestBody int trackId){
+    public ResponseEntity<?> updateTrack(@RequestBody Track track){
         ResponseEntity responseEntity;
         try{
 
-            Track track = trackService.updateTrack(trackId);
-            responseEntity= new ResponseEntity<Track>(track, HttpStatus.CREATED);
+            Track updatedTrack = trackService.updateTrack(track);
+            responseEntity= new ResponseEntity<Track>(updatedTrack, HttpStatus.CREATED);
         }
         catch(TrackAlreadyExistsException ex){
             responseEntity=new ResponseEntity<String>(ex.getMessage(),HttpStatus.CONFLICT);

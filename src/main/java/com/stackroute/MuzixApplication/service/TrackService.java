@@ -14,6 +14,6 @@ public interface TrackService {
     public Track getTrackByName(String name) throws TrackDoesNotExistsException;    //get
     public Track getTrackByComment(String comment) throws TrackDoesNotExistsException;  //get
     public String deleteTrack(int trackId) throws TrackDoesNotExistsException;  //delete
-    public Track updateTrack(int trackId) throws TrackAlreadyExistsException;   //put
+    public Track updateTrack(Track track) throws TrackAlreadyExistsException;   //put
 
 }

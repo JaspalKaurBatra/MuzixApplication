@@ -56,11 +56,26 @@ public class TrackServiceImpl implements TrackService {
         trackRepository.deleteById(trackId);    //add exceptions later
         return "Deleted";
     }
-
+/*
     @Override
     public Track updateTrack(int trackId) throws TrackAlreadyExistsException {
         Track track = trackRepository.findById(trackId).get();
 
         return track;
+    }*/
+
+    @Override
+    public Track updateTrack(Track track) throws TrackAlreadyExistsException {
+
+        trackRepository.findById(track.getId()).get();
+        track.setId(track.getId());
+        track.setName(track.getName());
+        track.setComment(track.getComment());
+        trackRepository.save(track);
+
+        return track;
     }
+
+
+
 }
