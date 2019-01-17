@@ -1,6 +1,7 @@
 package com.stackroute.MuzixApplication.service;
 
 import com.stackroute.MuzixApplication.domain.Track;
+import com.stackroute.MuzixApplication.exceptions.NullValuesException;
 import com.stackroute.MuzixApplication.exceptions.TrackAlreadyExistsException;
 import com.stackroute.MuzixApplication.exceptions.TrackDoesNotExistsException;
 import com.stackroute.MuzixApplication.repository.TrackRepository;
@@ -19,61 +20,74 @@ public class TrackServiceImpl implements TrackService {
     }
 
     @Override
-    public Track saveTrack(Track track) throws TrackAlreadyExistsException {
+    public Track saveTrack(Track track) throws TrackAlreadyExistsException,NullValuesException {
 
         if(trackRepository.existsById(track.getId())){
-            throw new TrackAlreadyExistsException("user already exists");
+            throw new TrackAlreadyExistsException("Track already exists");
+        }
+        if(track.getName() == null && track.getComment() == null){
+            throw new NullValuesException("null values passed");
         }
         Track savedTrack = trackRepository.save(track);
-        if(savedTrack == null){
-            throw new TrackAlreadyExistsException("user already exists");    //add some other exception
-        }
         return savedTrack;
     }
 
     @Override
     public List<Track> getAllTracks() {
-        return trackRepository.findAll();
+        return trackRepository.findAll();   //returns optional i.e., either null or tracks(No Runtime Exception is thrown on Not Found), so no need to throw an exception
     }
 
     @Override
     public Track getTrackById(int trackId) throws TrackDoesNotExistsException {
-        return trackRepository.findById(trackId).get();
+
+        if(trackRepository.existsById(trackId)){
+            return trackRepository.findById(trackId).get();
+        }
+        else{
+            throw new TrackDoesNotExistsException("Track does not exists");
+        }
+
+    }
+
+
+    @Override
+    public List<Track> getTrackByName(String name) throws TrackDoesNotExistsException {
+        return  trackRepository.findAllByName(name);
     }
 
     @Override
-    public Track getTrackByName(String name) throws TrackDoesNotExistsException {
-        return trackRepository.findByName(name);
+    public List<Track> getTrackByComment(String comment) throws TrackDoesNotExistsException {
+        return trackRepository.findAllByComment(comment);
     }
 
     @Override
-    public Track getTrackByComment(String comment) throws TrackDoesNotExistsException {
-        return trackRepository.findByComment(comment);
+    public Track deleteTrack(int trackId) throws TrackDoesNotExistsException {
+
+        if(trackRepository.existsById(trackId)){
+            Track deletedTrack = getTrackById(trackId); //storing the track to be deleted in a variable
+            trackRepository.deleteById(trackId);
+            return deletedTrack;
+        }
+        else {
+            throw new TrackDoesNotExistsException("Track does not exits");
+        }
+
     }
 
     @Override
-    public String deleteTrack(int trackId) throws TrackDoesNotExistsException {
-        trackRepository.deleteById(trackId);    //add exceptions later
-        return "Deleted";
-    }
-/*
-    @Override
-    public Track updateTrack(int trackId) throws TrackAlreadyExistsException {
-        Track track = trackRepository.findById(trackId).get();
+    public Track updateTrack(Track track) throws TrackDoesNotExistsException {
+        if(trackRepository.existsById(track.getId())) {
+            trackRepository.findById(track.getId()).get();
+            track.setId(track.getId());
+            track.setName(track.getName());
+            track.setComment(track.getComment());
+            trackRepository.save(track);
+            return track;
+        }
+        else{
+            throw new TrackDoesNotExistsException("Track does not exits");
+        }
 
-        return track;
-    }*/
-
-    @Override
-    public Track updateTrack(Track track) throws TrackAlreadyExistsException {
-
-        trackRepository.findById(track.getId()).get();
-        track.setId(track.getId());
-        track.setName(track.getName());
-        track.setComment(track.getComment());
-        trackRepository.save(track);
-
-        return track;
     }
 
 

@@ -2,6 +2,7 @@ package com.stackroute.MuzixApplication.controller;
 
 
 import com.stackroute.MuzixApplication.domain.Track;
+import com.stackroute.MuzixApplication.exceptions.NullValuesException;
 import com.stackroute.MuzixApplication.exceptions.TrackAlreadyExistsException;
 import com.stackroute.MuzixApplication.exceptions.TrackDoesNotExistsException;
 import com.stackroute.MuzixApplication.service.TrackService;
@@ -26,12 +27,13 @@ public class TrackController {
     public ResponseEntity<?> saveTrack(@RequestBody Track track){
         ResponseEntity responseEntity;
         try{
-            //trackService.saveTrack(track);
             Track savedTrack =trackService.saveTrack(track);
-            //responseEntity= new ResponseEntity<Track>(track, HttpStatus.CREATED);
             responseEntity= new ResponseEntity<Track>(savedTrack, HttpStatus.CREATED);
         }
         catch(TrackAlreadyExistsException ex){
+            responseEntity=new ResponseEntity<String>(ex.getMessage(),HttpStatus.CONFLICT);
+        }
+        catch(NullValuesException ex){
             responseEntity=new ResponseEntity<String>(ex.getMessage(),HttpStatus.CONFLICT);
         }
         return responseEntity;
@@ -46,8 +48,8 @@ public class TrackController {
     public ResponseEntity<?> getTrackById(@PathVariable("id") int trackId){
         ResponseEntity responseEntity;
         try{
-            Track track=trackService.getTrackById(trackId);  //for parameter-input
-            responseEntity= new ResponseEntity<Track>(track, HttpStatus.CREATED); //<type> is for return type
+            Track track=trackService.getTrackById(trackId);
+            responseEntity= new ResponseEntity<Track>(track, HttpStatus.CREATED);
         }
         catch(TrackDoesNotExistsException ex){
             responseEntity=new ResponseEntity<String>(ex.getMessage(),HttpStatus.CONFLICT);
@@ -59,8 +61,8 @@ public class TrackController {
     public ResponseEntity<?> getTrackByName(@PathVariable("name") String name){
         ResponseEntity responseEntity;
         try{
-            Track track=trackService.getTrackByName(name);  //for parameter-input
-            responseEntity= new ResponseEntity<Track>(track, HttpStatus.CREATED); //<type> is for return type
+            List<Track> track=trackService.getTrackByName(name);  //for parameter-input
+            responseEntity= new ResponseEntity<List<Track>>(track, HttpStatus.CREATED); //<type> is for return type
         }
         catch(TrackDoesNotExistsException ex){
             responseEntity=new ResponseEntity<String>(ex.getMessage(),HttpStatus.CONFLICT);
@@ -72,8 +74,8 @@ public class TrackController {
     public ResponseEntity<?> getTrackByComment(@PathVariable("comment") String comment){
         ResponseEntity responseEntity;
         try{
-            Track track = trackService.getTrackByComment(comment);  //for parameter-input
-            responseEntity= new ResponseEntity<Track>(track, HttpStatus.CREATED); //<type> is for return type
+            List<Track> track = trackService.getTrackByComment(comment);  //for parameter-input
+            responseEntity= new ResponseEntity<List<Track>>(track, HttpStatus.CREATED); //<type> is for return type
         }
         catch(TrackDoesNotExistsException ex){
             responseEntity=new ResponseEntity<String>(ex.getMessage(),HttpStatus.CONFLICT);
@@ -85,8 +87,8 @@ public class TrackController {
     public ResponseEntity<?> deleteTrack(@PathVariable("id") int trackId){
         ResponseEntity responseEntity;
         try{
-            trackService.deleteTrack(trackId);  //for parameter-input
-            responseEntity= new ResponseEntity<String>("deleted", HttpStatus.CREATED); //<type> is for return type
+            Track track = trackService.deleteTrack(trackId);
+            responseEntity= new ResponseEntity<Track>(track, HttpStatus.CREATED);
         }
         catch(TrackDoesNotExistsException ex){
             responseEntity=new ResponseEntity<String>(ex.getMessage(),HttpStatus.CONFLICT);
@@ -98,16 +100,12 @@ public class TrackController {
     public ResponseEntity<?> updateTrack(@RequestBody Track track){
         ResponseEntity responseEntity;
         try{
-
             Track updatedTrack = trackService.updateTrack(track);
             responseEntity= new ResponseEntity<Track>(updatedTrack, HttpStatus.CREATED);
         }
-        catch(TrackAlreadyExistsException ex){
+        catch(TrackDoesNotExistsException ex){
             responseEntity=new ResponseEntity<String>(ex.getMessage(),HttpStatus.CONFLICT);
         }
-        /*catch(TrackDoesNotExistsException ex){
-                responseEntity=new ResponseEntity<String>(ex.getMessage(),HttpStatus.CONFLICT);
-            }*/
         return responseEntity;
     }
 
