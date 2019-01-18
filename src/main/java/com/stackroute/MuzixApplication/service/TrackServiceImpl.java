@@ -92,14 +92,14 @@ public class TrackServiceImpl implements TrackService {
             if(track.getName() != null && track.getName() != "") {
                 track.setName(track.getName());
             }
-            if(track.getComment() != null && track.getComment() != "" ) {     //bt
+            if(track.getComment() != null && track.getComment() != "" ) {
                 track.setComment(track.getComment());
             }
             trackRepository.save(track);
             return track;
         }
         else{
-            throw new TrackDoesNotExistsException("Track does not exits");
+            throw new TrackDoesNotExistsException("Track does not exits");      //
         }
 
     }
