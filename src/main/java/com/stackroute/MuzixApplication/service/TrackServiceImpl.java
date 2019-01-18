@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TrackServiceImpl implements TrackService {
@@ -51,13 +52,21 @@ public class TrackServiceImpl implements TrackService {
 
 
     @Override
-    public List<Track> getTrackByName(String name) throws TrackDoesNotExistsException {
-        return  trackRepository.findAllByName(name);
+    public Optional<Track> getTrackByName(String name){
+        return  trackRepository.findOneByName(name);
+    }
+    @Override
+    public Optional<Track> getTrackByComment(String comment){
+        return trackRepository.findOneByComment(comment);
     }
 
     @Override
-    public List<Track> getTrackByComment(String comment) throws TrackDoesNotExistsException {
-        return trackRepository.findAllByComment(comment);
+    public List<Track> getAllTracksByName(String name) throws TrackDoesNotExistsException{
+        return  trackRepository.findByName(name);
+    }
+    @Override
+    public List<Track> getAllTracksByComment(String comment) throws TrackDoesNotExistsException{
+        return trackRepository.findByComment(comment);
     }
 
     @Override
@@ -76,11 +85,16 @@ public class TrackServiceImpl implements TrackService {
 
     @Override
     public Track updateTrack(Track track) throws TrackDoesNotExistsException {
+
         if(trackRepository.existsById(track.getId())) {
             trackRepository.findById(track.getId()).get();
             track.setId(track.getId());
-            track.setName(track.getName());
-            track.setComment(track.getComment());
+            if(track.getName() != null && track.getName() != "") {
+                track.setName(track.getName());
+            }
+            if(track.getComment() != null && track.getComment() != "" ) {     //bt
+                track.setComment(track.getComment());
+            }
             trackRepository.save(track);
             return track;
         }
