@@ -17,14 +17,16 @@ public class GlobalExceptionsHandler {
     @ResponseStatus(value= HttpStatus.CONFLICT, reason="Track already exists")
     @ExceptionHandler(TrackAlreadyExistsException.class)
     public void handleTrackAlreadyExistsException(TrackAlreadyExistsException e) {
+
     }
 
-    @ResponseStatus(value= HttpStatus.NOT_FOUND, reason="Track does not exist")
+    //@ResponseStatus(value= HttpStatus.NOT_FOUND, reason="Track does not exist")
     @ExceptionHandler(TrackDoesNotExistsException.class)
-    public void handleTrackDoesNotExistsException(TrackDoesNotExistsException e) {
+    public ResponseEntity<?> handleTrackDoesNotExistsException(TrackDoesNotExistsException e) {
+        return new ResponseEntity<String>(e.getMessage(),HttpStatus.NOT_FOUND);
     }
 
-    @ResponseStatus(value= HttpStatus.CONFLICT, reason="Null values passed")
+    //@ResponseStatus(value= HttpStatus.CONFLICT, reason="Null values passed")
     @ExceptionHandler(NullValuesException.class)
     public void handleNullValuesException(NullValuesException e) {
     }
@@ -34,7 +36,7 @@ public class GlobalExceptionsHandler {
 @Log4j
 public class GlobalExceptionHandler {
 
-ctrl+q
+
     @ResponseStatus(value= HttpStatus.NOT_FOUND, reason="User does not exist")
     @ExceptionHandler(TrackDoesNotExistsException.class)
     public void handleUserDoesNotExistException(TrackDoesNotExistsException e){
