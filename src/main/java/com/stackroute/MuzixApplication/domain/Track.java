@@ -23,4 +23,9 @@ public class Track {
     @ApiModelProperty(notes = "Comment for the track")
     @Column
     private String comment;
+
+    public Track(String name, String comment) {
+        this.name = name;
+        this.comment = comment;
+    }
 }
