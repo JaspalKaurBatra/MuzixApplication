@@ -26,7 +26,7 @@ public class GlobalExceptionsHandler {
         return new ResponseEntity<String>(e.getMessage(),HttpStatus.NOT_FOUND);
     }
 
-    //@ResponseStatus(value= HttpStatus.CONFLICT, reason="Null values passed")
+    @ResponseStatus(value= HttpStatus.CONFLICT, reason="Null values passed")
     @ExceptionHandler(NullValuesException.class)
     public void handleNullValuesException(NullValuesException e) {
     }
